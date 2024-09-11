@@ -1,0 +1,5 @@
+# host ip addresses.
+
+192.168.1.157 ansible_user=dhieu
+192.168.1.158 ansible_user=dhieu
+139.144.31.108 ansible_user=dhieu
