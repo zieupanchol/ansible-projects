@@ -1,5 +1,10 @@
 # host ip addresses.
 
-192.168.1.157 ansible_user=dhieu apache_package=apache2 php_package=libapache2-mod-php
-192.168.1.158 ansible_user=dhieu apache_package=apache2 php_package=libapache2-mod-php
-139.144.31.108 ansible_user=dhieu apache_package=httpd php_package=php
+[file_servers]
+
+192.168.1.157 
+
+[web_servers]
+
+192.168.1.158
+139.144.31.108
