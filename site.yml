@@ -4,12 +4,12 @@
   become: true
   pre_tasks:
   
-  - name: update repo cache (CentOS)
+  - name: update repo cache (fedora)
     tags: always
     dnf:
       update_cache: yes
     changed_when: false  
-    when: ansible_distribution == "CentOS"  
+    when: ansible_distribution == "Fedora"  
 
   - name: update repo cache (Ubuntu)
     tags: always
@@ -20,93 +20,21 @@
 
 - hosts: all
   become: true
-  tasks:
-
-
-  - name: add ssh key for ansible user
-    tags: always
-    authorized_key: 
-      user: ansible
-      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ3TQiK1qskxP7ITDObdfTbM+v8/Mh74/YUgyRyOxldo ansible"
-
+  roles:
+    - base     
 
 - hosts: workstations
   become: true
-  tasks:
-
-  - name: install unzip
-    package: 
-      name: unzip 
-
-  - name: install terraform
-    unarchive:
-      src: https://releases.hashicorp.com/terraform/1.9.5/terraform_1.9.5_linux_amd64.zip
-      dest: /usr/local/bin
-      remote_src: yes
-      owner: root
-      group: root
-      mode: 0755    
+  roles:
+    - workstations       
 
 - hosts: web_servers
   become: true
-  tasks:
+  roles:
+    - web_servers      
 
-  - name: install apache2 and php for Ubuntu servers
-    tags: apache, apache2, ubuntu
-    apt:
-      name:
-        - libapache2-mod-php
-        - apache2  
-      state: latest        
-    when: ansible_distribution == "Ubuntu"
-
-  - name: install apache and php on CentOS servers
-    tags: centos, httpd
-    dnf:
-      name: 
-        - httpd
-        - php  
-      state: latest
-    when: ansible_distribution == "CentOS"
-
-  - name: Ensure httpd is started and enabled
-    tags: httpd, centos, apache
-    service:
-       name: httpd
-       state: started
-       enabled: yes
-    when: ansible_distribution == "CentOS"   
-
-  - name: change email address for admin
-    tags: centos, apache, httpd
-    lineinfile:
-       path: /etc/httpd/conf/httpd.conf
-       regexp: '^ServerAdmin'
-       line: ServerAdmin someone@example.com
-    when: ansible_distribution ==  "CentOS"
-    register: httpd
-  
-  - name: restart httpd (CentOS)
-    tags: apache, httpd, centos
-    service:
-       name: httpd
-       state: restarted
-    when: httpd.changed     
-
-  - name: copy default html file for site
-    tags: apache, apache2, httpd
-    copy:
-      src: default_site.html
-      dest: /var/www/html/index.html
-      owner: root
-      group: root
-      mode: 0644      
 
 - hosts: file_servers
   become: true
-  tasks:
-  - name: install samba package
-    tags: samba
-    package:
-      name: samba
-      state: latest     
+  roles:
+    - file_servers

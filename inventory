@@ -5,7 +5,7 @@
 
 [web_servers]
 192.168.1.158
-139.144.31.108
+#66.228.61.238 ansible_python_interpreter=/usr/bin/python3
 
 [workstations]
 192.168.1.160
